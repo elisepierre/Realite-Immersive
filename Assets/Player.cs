@@ -5,12 +5,12 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     // ELEMENT DE BASE
-    public float vie = 100;
+    public float vie = 100; // vie pour vie actuelle, celle qui diminue ave les degats subis
     public float degatsBase = 5;
     public float bonusDegats = 20;
 
     // VIE //
-    public float vieMax = 100;
+    public float vieMax = 100; // vie max, ne change pas sauf par bienfait
     public float reductionDegats = 0; // en %
     public bool invincible = false;
     public float duree_invincibilite = 20;
@@ -20,15 +20,48 @@ public class Player : MonoBehaviour
     public int nombreDash = 0;
     public float cooldownDash = 10;
     public float vitesseDeplacement = 10;
+    public float bonusVitesse = 10;
 
     public List<Bienfait> bienfaitsActifs = new List<Bienfait>();
 
 
     public void AjouterBienfait(Bienfait b)
     {
-        b.Appliquer(this);
-        bienfaitsActifs.Add(b);
+        if (b != null)
+        {
+            b.Appliquer(this);
+            bienfaitsActifs.Add(b);
+            Debug.Log($"Bienfait ajouté : {b.nom} (Permanent: {b.estPermanent})");
+        }
     }
+
+
+    public void Mourir()
+    {
+        Debug.Log("Mort du joueur. Nettoyage des bienfaits temporaires...");
+
+        // On boucle à l'envers (i--) car on va supprimer des éléments de la liste
+        for (int i = bienfaitsActifs.Count - 1; i >= 0; i--)
+        {
+            Bienfait b = bienfaitsActifs[i];
+
+            // Si le bienfait est TEMPORAIRE (estPermanent == false)
+            if (!b.estPermanent)
+            {
+                // 1. On annule ses effets sur les stats
+                b.Retirer(this);
+
+                // 2. On le supprime de la liste
+                bienfaitsActifs.RemoveAt(i);
+            }
+        }
+
+        // Ici : Code pour recharger la scène du Hub (Hades) ou Respawn            _  _  _ 
+        // UnityEngine.SceneManagement.SceneManager.LoadScene("01_Hades_Start");  /!\/!\/!\
+    }
+
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -41,9 +74,11 @@ public class Player : MonoBehaviour
     {
         if (invincible)
         {
+            reductionDegats = 100;
             if (Time.time - debut_invincibilite > duree_invincibilite)
             {
                 invincible = false;
+                reductionDegats = 0;  // c'est en pourcentage. Par simplicite, on perds un bienfait qui ameliorerait cet attribut (...?)
             }
         }    
         

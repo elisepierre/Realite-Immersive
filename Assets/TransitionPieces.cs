@@ -1,64 +1,78 @@
-﻿    using System.Collections;
-    using UnityEngine;
-    using UnityEngine.SceneManagement;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
-    public class TransitionPieces : MonoBehaviour
+public class TransitionPieces : MonoBehaviour
+{
+    [Header("Configuration Scène")]
+    [Tooltip("Nom exact de la scène à charger")]
+    [SerializeField] private string sceneName;
+
+    [Tooltip("Temps d'attente avant le chargement")]
+    [SerializeField] private float waitDuration = 1.0f;
+
+    [Header("Conditions de Sortie")]
+    [Tooltip("Si coché, la porte ne s'ouvre que s'il n'y a plus d'ennemis")]
+    public bool doitEliminerEnnemis = true;
+
+    private bool estEnTransition = false;
+
+    // --- METHODE 1 : Clic (XR Simple Interactable) ---
+    public void ChangerDeScene()
     {
-        [Header("Configuration")]
-        [Tooltip("Nom exact de la scène à charger")]
-        [SerializeField] private string sceneName;
+        TenterTransition();
+    }
 
-        [Tooltip("Temps d'attente avant le chargement (pour le Fade)")]
-        [SerializeField] private float waitDuration = 1.0f;
-
-        private bool estEnTransition = false;
-
-        // --- METHODE 1 : Appelée par le XR Simple Interactable (Clic) ---
-        public void ChangerDeScene()
+    // --- METHODE 2 : Traversée (Trigger) ---
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && !estEnTransition)
         {
-            LancerTransition();
-        }
-
-        // --- METHODE 2 : Appelée quand on marche dedans ---
-        private void OnTriggerEnter(Collider other)
-        {
-            // On vérifie que c'est bien le joueur qui touche la porte, pas un ennemi ou une balle
-            if (other.CompareTag("Player") && !estEnTransition)
-            {
-                Debug.Log("Le joueur a traversé la porte !");
-                LancerTransition();
-            }
-        }
-
-        // --- LOGIQUE COMMUNE ---
-        private void LancerTransition()
-        {
-            if (estEnTransition) return; // Empêche de lancer 2 fois
-            estEnTransition = true;
-
-            StartCoroutine(TransitionRoutine());
-        }
-
-        IEnumerator TransitionRoutine()
-        {
-            Debug.Log("Début de la transition vers : " + sceneName);
-
-            // TODO : Insérer ici l'appel à ton script de Fade (Fondu au noir)
-            // Exemple : FadeScreen.Instance.FadeOut();
-
-            yield return new WaitForSeconds(waitDuration);
-
-            // Chargement Asynchrone
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-            asyncLoad.allowSceneActivation = false;
-
-            while (!asyncLoad.isDone)
-            {
-                if (asyncLoad.progress >= 0.9f)
-                {
-                    asyncLoad.allowSceneActivation = true;
-                }
-                yield return null;
-            }
+            TenterTransition();
         }
     }
+
+    // --- LOGIQUE DE VÉRIFICATION ---
+    private void TenterTransition()
+    {
+        if (estEnTransition) return;
+
+        // VERIFICATION : Reste-t-il des ennemis ?
+        if (doitEliminerEnnemis)
+        {
+            // On cherche tous les objets actifs qui ont le tag "Enemy"
+            GameObject[] ennemisRestants = GameObject.FindGameObjectsWithTag("Enemy");
+
+            if (ennemisRestants.Length > 0)
+            {
+                Debug.Log("Porte fermée ! Il reste " + ennemisRestants.Length + " ennemis.");
+
+                // Ici, tu pourrais jouer un son "Bruit de porte verrouillée"
+                // ou faire clignoter la porte en rouge
+                return; // On arrête tout, on ne lance pas la transition
+            }
+        }
+
+        // Si on arrive ici, c'est que la voie est libre
+        StartCoroutine(TransitionRoutine());
+    }
+
+    IEnumerator TransitionRoutine()
+    {
+        estEnTransition = true;
+        Debug.Log("Transition autorisée. Chargement de : " + sceneName);
+
+        // TODO : Lancer le Fade Out ici
+
+        yield return new WaitForSeconds(waitDuration);
+
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        asyncLoad.allowSceneActivation = false;
+
+        while (!asyncLoad.isDone)
+        {
+            if (asyncLoad.progress >= 0.9f) asyncLoad.allowSceneActivation = true;
+            yield return null;
+        }
+    }
+}
