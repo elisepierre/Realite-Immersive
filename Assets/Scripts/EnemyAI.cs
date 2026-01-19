@@ -15,12 +15,14 @@ public class EnemyAI : MonoBehaviour
     public float dashSpeed = 12f;
     public float dashDuration = 0.25f;
     public float dashPreparationTime = 0.4f;
+    public float dashCooldown = 2f;
 
     private float originalSpeed;
     private Rigidbody rb;
 
     private bool isPreparingDash = false;
     private bool isDashing = false;
+    private bool canDash = true;
     private float dashTimer = 0f;
 
     private void Start()
@@ -60,18 +62,15 @@ public class EnemyAI : MonoBehaviour
         }
 
         if (isPreparingDash)
-        {
             return;
-        }
 
-        if (distance <= dashDistance)
+        if (distance <= dashDistance && canDash)
         {
             StartCoroutine(PrepareDash());
             return;
         }
 
         MoveNormally(flatDirection);
-
         RotateTowardsPlayer();
     }
 
@@ -101,6 +100,7 @@ public class EnemyAI : MonoBehaviour
     private System.Collections.IEnumerator PrepareDash()
     {
         isPreparingDash = true;
+        canDash = false;
         speed = 0f;
 
         yield return new WaitForSeconds(dashPreparationTime);
@@ -123,7 +123,15 @@ public class EnemyAI : MonoBehaviour
         {
             isDashing = false;
             speed = originalSpeed;
+
+            StartCoroutine(DashCooldownRoutine());
         }
+    }
+
+    private System.Collections.IEnumerator DashCooldownRoutine()
+    {
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
     }
 
     public void SetSpeed(float newSpeed)
