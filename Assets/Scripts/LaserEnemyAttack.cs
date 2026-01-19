@@ -9,6 +9,13 @@ public class LaserEnemyAttack : MonoBehaviour
     public float attackRange = 20f;
     public float damagePerSecond = 10f;
 
+    [Header("Cycle d'attaque")]
+    public float laserDuration = 3f;
+    public float cooldownDuration = 5f;
+
+    private float timer = 0f;
+    private bool laserActive = false;
+
     private LineRenderer lineRenderer;
     private PlayerHealth playerHealth;
 
@@ -43,10 +50,33 @@ public class LaserEnemyAttack : MonoBehaviour
 
         float distance = Vector3.Distance(firePoint.position, player.position);
 
-        if (distance <= attackRange)
-            FireLaser();
+        timer += Time.deltaTime;
+
+        if (laserActive)
+        {
+            if (timer >= laserDuration)
+            {
+                laserActive = false;
+                timer = 0f;
+                lineRenderer.enabled = false;
+            }
+        }
         else
+        {
+            if (timer >= cooldownDuration)
+            {
+                laserActive = true;
+                timer = 0f;
+            }
+        }
+
+        if (distance > attackRange || !laserActive)
+        {
             lineRenderer.enabled = false;
+            return;
+        }
+
+        FireLaser();
     }
 
     private void FireLaser()
@@ -69,12 +99,7 @@ public class LaserEnemyAttack : MonoBehaviour
         }
         else
         {
-            lineRenderer.SetPosition(
-                1,
-                firePoint.position + direction * attackRange + visualOffset
-            );
+            lineRenderer.SetPosition(1, firePoint.position + direction * attackRange + visualOffset);
         }
     }
-
-
 }
