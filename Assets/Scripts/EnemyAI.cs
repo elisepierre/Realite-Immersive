@@ -7,6 +7,9 @@ public class EnemyAI : MonoBehaviour
     public float speed = 2f;
     public float rotationSpeed = 5f;
 
+    [Header("Distance d'activation")]
+    public float activationDistance = 10f;
+
     private float originalSpeed;
     private Rigidbody rb;
 
@@ -37,13 +40,17 @@ public class EnemyAI : MonoBehaviour
     {
         if (player == null) return;
 
-        Vector3 moveDirection = player.position - transform.position;
-        moveDirection.y = 0f;
+        Vector3 flatDirection = player.position - transform.position;
+        flatDirection.y = 0f;
+        float distance = flatDirection.magnitude;
 
-        if (moveDirection.sqrMagnitude > 0.001f)
+        if (distance > activationDistance)
+            return;
+
+        if (flatDirection.sqrMagnitude > 0.001f)
         {
-            moveDirection.Normalize();
-            Vector3 newPosition = rb.position + moveDirection * speed * Time.fixedDeltaTime;
+            flatDirection.Normalize();
+            Vector3 newPosition = rb.position + flatDirection * speed * Time.fixedDeltaTime;
             rb.MovePosition(newPosition);
         }
 
