@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,13 +10,26 @@ public class TransitionPieces : MonoBehaviour
     [SerializeField] private string sceneName;
 
     [Tooltip("Temps d'attente avant le chargement")]
-    [SerializeField] private float waitDuration = 1.0f;
+    [SerializeField] private float waitDuration = 3.0f;
 
     [Header("Conditions de Sortie")]
     [Tooltip("Si coché, la porte ne s'ouvre que s'il n'y a plus d'ennemis")]
     public bool doitEliminerEnnemis = true;
 
     private bool estEnTransition = false;
+
+
+    [Header("Récompenses (Loot)")]
+    [Tooltip("Cochez si cette porte donne une récompense aléatoire")]
+    public bool donneUneRecompense = true;
+
+    [Tooltip("Glissez ici tous les bienfaits que le joueur peut gagner via cette porte")]
+    public List<Bienfait> poolDeBienfaits;
+
+    [Header("UI Feedback")]
+    // Glisse ici l'objet Canvas qui contient le script NotificationUI
+    public NotificationUI notificationSystem;
+
 
     // --- METHODE 1 : Clic (XR Simple Interactable) ---
     public void ChangerDeScene()
@@ -37,25 +51,71 @@ public class TransitionPieces : MonoBehaviour
     {
         if (estEnTransition) return;
 
-        // VERIFICATION : Reste-t-il des ennemis ?
+        // 1. Vérification des ennemis
         if (doitEliminerEnnemis)
         {
-            // On cherche tous les objets actifs qui ont le tag "Enemy"
-            GameObject[] ennemisRestants = GameObject.FindGameObjectsWithTag("Enemy");
-
-            if (ennemisRestants.Length > 0)
+            if (GameObject.FindGameObjectsWithTag("Enemy").Length > 0)
             {
-                Debug.Log("Porte fermée ! Il reste " + ennemisRestants.Length + " ennemis.");
-
-                // Ici, tu pourrais jouer un son "Bruit de porte verrouillée"
-                // ou faire clignoter la porte en rouge
-                return; // On arrête tout, on ne lance pas la transition
+                Debug.Log("Il reste des ennemis !");
+                return;
             }
         }
 
-        // Si on arrive ici, c'est que la voie est libre
+        // 2. Donner la récompense JUSTE AVANT de partir
+        if (donneUneRecompense && poolDeBienfaits.Count > 0)
+        {
+            DonnerBienfaitAleatoire();
+        }
+
         StartCoroutine(TransitionRoutine());
     }
+
+    private void DonnerBienfaitAleatoire()
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+        {
+            Player playerScript = playerObj.GetComponent<Player>();
+
+            // --- ETAPE 1 : Filtrer avec la Mémoire Globale ---
+            List<Bienfait> candidatsValides = new List<Bienfait>();
+
+            foreach (Bienfait b in poolDeBienfaits)
+            {
+                // La condition stricte : 
+                // Est-ce que ce nom apparaît dans le livre d'histoire ?
+                // Si NON, alors on peut le gagner.
+                if (!Player.historiqueDesBienfaits.Contains(b.nom))
+                {
+                    candidatsValides.Add(b);
+                }
+            }
+
+            // --- ETAPE 2 : Piocher ---
+            if (candidatsValides.Count > 0)
+            {
+                int indexAleatoire = Random.Range(0, candidatsValides.Count);
+                Bienfait bienfaitGagne = candidatsValides[indexAleatoire];
+
+                // Pas de visuel, juste des maths !
+                playerScript.AjouterBienfait(bienfaitGagne);
+
+                if (notificationSystem != null)
+                {
+                    notificationSystem.AfficherMessage("Bienfait obtenu :\n" + bienfaitGagne.nom);
+                }
+            }
+
+            else
+            {
+                Debug.Log("Le joueur a déjà épuisé tous les bienfaits disponibles dans cette porte !");
+            }
+        }
+    }
+
+
+
+
 
     IEnumerator TransitionRoutine()
     {

@@ -33,7 +33,7 @@ public class Player : MonoBehaviour
     public float bonusVitesse = 10;
 
     public List<Bienfait> bienfaitsActifs = new List<Bienfait>();
-
+    public static List<string> historiqueDesBienfaits = new List<string>(); // cela marche meme apres la mort pour savoir les bienfaits qu'on a deja utilises par le passe
 
     public void AjouterBienfait(Bienfait b)
     {
@@ -42,6 +42,10 @@ public class Player : MonoBehaviour
             b.Appliquer(this);
             bienfaitsActifs.Add(b);
             Debug.Log($"Bienfait ajouté : {b.nom} (Permanent: {b.estPermanent})");
+            if (!historiqueDesBienfaits.Contains(b.nom))
+            {
+                historiqueDesBienfaits.Add(b.nom);
+            }
         }
     }
 

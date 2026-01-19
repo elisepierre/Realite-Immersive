@@ -21552,6 +21552,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: 
   waitDuration: 1
+  doitEliminerEnnemis: 1
+  donneUneRecompense: 1
+  poolDeBienfaits:
+  - {fileID: 11400000, guid: f222ddd98576b1d4fbf95c08bef7a72c, type: 2}
+  - {fileID: 11400000, guid: b9926d0721604a441b29bb5a7ac76cd6, type: 2}
+  - {fileID: 11400000, guid: 4b3d1b3f972879f48b08446b2eabfdd5, type: 2}
+  - {fileID: 11400000, guid: f227ff964e564724ca243e8aa51b62b3, type: 2}
+  - {fileID: 11400000, guid: 7b67c35bf474d624ba6dad73372e65f7, type: 2}
+  - {fileID: 11400000, guid: 79145530c4f19b642be972a99815d225, type: 2}
+  - {fileID: 11400000, guid: 950a678f0a7b6bc4b9c9978087303d02, type: 2}
+  - {fileID: 11400000, guid: 85e58427c3cc95c4f9688ac20a0d5c38, type: 2}
+  - {fileID: 11400000, guid: 8d9a34af6fece134689000c201d10088, type: 2}
 --- !u!114 &883195727
 MonoBehaviour:
   m_ObjectHideFlags: 0
