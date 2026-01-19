@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+
+    [Header("Aura Globale")]
+    //1.0 = Vitesse normale (100%)
+    //0.9 = 90% de vitesse (donc 10% de ralentissement)
+    public float multiplicateurVitesseEnnemis = 1.0f;
+
+    [Header("Degats Ennemis")]
+    public float multiplicateurEnnemis = 1.0f;
+
+
     // ELEMENT DE BASE
     public float vie = 100; // vie pour vie actuelle, celle qui diminue ave les degats subis
     public float degatsBase = 5;
