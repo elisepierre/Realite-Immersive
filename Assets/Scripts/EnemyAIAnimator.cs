@@ -8,6 +8,9 @@ public class EnemyAIAnimator : MonoBehaviour
     public float speed = 2f;
     public float rotationSpeed = 5f;
 
+    [Header("Distance d'activation")]
+    public float activationDistance = 10f;
+
     private Rigidbody rb;
     private Animator animator;
     private bool isDead = false;
@@ -34,6 +37,14 @@ public class EnemyAIAnimator : MonoBehaviour
 
         Vector3 dir = player.position - transform.position;
         dir.y = 0f;
+
+        float distance = dir.magnitude;
+
+        if (distance > activationDistance)
+        {
+            animator.SetBool("IsMoving", false);
+            return;
+        }
 
         bool isMoving = dir.sqrMagnitude > 0.001f;
         animator.SetBool("IsMoving", isMoving);
