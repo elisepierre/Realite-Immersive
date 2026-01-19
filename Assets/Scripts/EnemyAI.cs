@@ -7,11 +7,21 @@ public class EnemyAI : MonoBehaviour
     public float speed = 2f;
     public float rotationSpeed = 5f;
 
-    [Header("Distance d'activation")]
+    [Header("Distances")]
     public float activationDistance = 10f;
+    public float dashDistance = 3f;
+
+    [Header("Dash Settings")]
+    public float dashSpeed = 12f;
+    public float dashDuration = 0.25f;
+    public float dashPreparationTime = 0.4f;
 
     private float originalSpeed;
     private Rigidbody rb;
+
+    private bool isPreparingDash = false;
+    private bool isDashing = false;
+    private float dashTimer = 0f;
 
     private void Start()
     {
@@ -26,13 +36,9 @@ public class EnemyAI : MonoBehaviour
         {
             GameObject cam = GameObject.Find("Main Camera");
             if (cam != null)
-            {
                 player = cam.transform;
-            }
             else
-            {
                 Debug.LogWarning("Main Camera introuvable. L'ennemi ne pourra pas suivre le joueur.");
-            }
         }
     }
 
@@ -47,28 +53,76 @@ public class EnemyAI : MonoBehaviour
         if (distance > activationDistance)
             return;
 
-        if (flatDirection.sqrMagnitude > 0.001f)
+        if (isDashing)
         {
-            flatDirection.Normalize();
-            Vector3 newPosition = rb.position + flatDirection * speed * Time.fixedDeltaTime;
-            rb.MovePosition(newPosition);
+            DashMovement(flatDirection);
+            return;
         }
 
+        if (isPreparingDash)
+        {
+            return;
+        }
+
+        if (distance <= dashDistance)
+        {
+            StartCoroutine(PrepareDash());
+            return;
+        }
+
+        MoveNormally(flatDirection);
+
+        RotateTowardsPlayer();
+    }
+
+    private void MoveNormally(Vector3 direction)
+    {
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            direction.Normalize();
+            Vector3 newPosition = rb.position + direction * speed * Time.fixedDeltaTime;
+            rb.MovePosition(newPosition);
+        }
+    }
+
+    private void RotateTowardsPlayer()
+    {
         Vector3 lookDirection = player.position - transform.position;
         lookDirection.y = 0f;
 
         if (lookDirection.sqrMagnitude > 0.001f)
         {
-            Quaternion targetRotation =
-                Quaternion.LookRotation(lookDirection) * Quaternion.Euler(0f, 180f, 0f);
-
-            Quaternion smoothRotation = Quaternion.Slerp(
-                rb.rotation,
-                targetRotation,
-                rotationSpeed * Time.fixedDeltaTime
-            );
-
+            Quaternion targetRotation = Quaternion.LookRotation(lookDirection) * Quaternion.Euler(0f, 180f, 0f);
+            Quaternion smoothRotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
             rb.MoveRotation(smoothRotation);
+        }
+    }
+
+    private System.Collections.IEnumerator PrepareDash()
+    {
+        isPreparingDash = true;
+        speed = 0f;
+
+        yield return new WaitForSeconds(dashPreparationTime);
+
+        isPreparingDash = false;
+        isDashing = true;
+        dashTimer = dashDuration;
+    }
+
+    private void DashMovement(Vector3 direction)
+    {
+        direction.Normalize();
+
+        Vector3 dashPosition = rb.position + direction * dashSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(dashPosition);
+
+        dashTimer -= Time.fixedDeltaTime;
+
+        if (dashTimer <= 0f)
+        {
+            isDashing = false;
+            speed = originalSpeed;
         }
     }
 
