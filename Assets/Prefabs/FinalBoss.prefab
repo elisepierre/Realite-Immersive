@@ -138,11 +138,12 @@ MonoBehaviour:
   player: {fileID: 0}
   activationDistance: 10
   shockwavePrefab: {fileID: 5463176896022094592, guid: e78b67414ca90724ab4307b141ed10f4, type: 3}
-  specialCooldown: 5
+  specialCooldown: 2
   shockwaveRadius: 10
   shockwaveDamage: 25
   shockwaveExpandSpeed: 10
   ringSegments: 50
+  shockwaveHeightThreshold: 1.2
 --- !u!195 &-7839000742531628445
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerHitZone : MonoBehaviour
 {
-    public float damageAmount = 0f;
+    public float damageAmount = 10f;
     public string enemyTag = "Enemy";
 
     private PlayerHealth playerHealth;
