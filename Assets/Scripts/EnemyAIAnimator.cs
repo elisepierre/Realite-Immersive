@@ -1,72 +1,55 @@
 using UnityEngine;
+using UnityEngine.AI;
 
-[RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class EnemyAIAnimator : MonoBehaviour
 {
     public Transform player;
-    public float speed = 2f;
-    public float rotationSpeed = 5f;
-
-    [Header("Distance d'activation")]
     public float activationDistance = 10f;
 
-    private Rigidbody rb;
+    private NavMeshAgent agent;
     private Animator animator;
     private bool isDead = false;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-
-        rb.freezeRotation = true;
-        rb.useGravity = true;
 
         if (player == null)
         {
-            GameObject cam = GameObject.Find("Main Camera");
-            if (cam != null)
-                player = cam.transform;
+            GameObject cam = GameObject.FindWithTag("MainCamera");
+            if (cam != null) player = cam.transform;
         }
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (player == null || isDead) return;
 
-        Vector3 dir = player.position - transform.position;
-        dir.y = 0f;
+        float distance = Vector3.Distance(transform.position, player.position);
 
-        float distance = dir.magnitude;
-
-        if (distance > activationDistance)
+        if (distance <= activationDistance)
         {
-            animator.SetBool("IsMoving", false);
-            return;
+            agent.SetDestination(player.position);
+            agent.isStopped = false;
+            
+            animator.SetBool("IsMoving", true);
         }
-
-        bool isMoving = dir.sqrMagnitude > 0.001f;
-        animator.SetBool("IsMoving", isMoving);
-
-        if (!isMoving) return;
-
-        dir.Normalize();
-        rb.MovePosition(rb.position + dir * speed * Time.fixedDeltaTime);
-
-        Quaternion targetRot = Quaternion.LookRotation(dir);
-        rb.MoveRotation(
-            Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime)
-        );
+        else
+        {
+            agent.isStopped = true;
+            animator.SetBool("IsMoving", false);
+        }
     }
 
     public void Die()
     {
         if (isDead) return;
-
         isDead = true;
+
+        agent.enabled = false;
         animator.SetBool("IsMoving", false);
         animator.SetTrigger("Die");
-        rb.isKinematic = true;
     }
 }

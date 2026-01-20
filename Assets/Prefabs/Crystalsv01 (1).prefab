@@ -368,7 +368,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -476,6 +476,8 @@ MonoBehaviour:
   firePoint: {fileID: 186609266092098790}
   attackRange: 20
   damagePerSecond: 10
+  laserDuration: 3
+  cooldownDuration: 5
 --- !u!1 &3508535130505872823
 GameObject:
   m_ObjectHideFlags: 0

@@ -206,6 +206,12 @@ MonoBehaviour:
   player: {fileID: 0}
   speed: 2
   rotationSpeed: 5
+  activationDistance: 10
+  dashDistance: 3
+  dashSpeed: 12
+  dashDuration: 0.25
+  dashPreparationTime: 0.4
+  dashCooldown: 2
 --- !u!114 &2778882008300918997
 MonoBehaviour:
   m_ObjectHideFlags: 0
