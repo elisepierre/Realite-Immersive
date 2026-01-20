@@ -5083,7 +5083,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3774017819560912924, guid: 23f3728b2c68266468eb8ffeee8f0389, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4551962310098055846, guid: 23f3728b2c68266468eb8ffeee8f0389, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5091,7 +5091,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4551962310098055846, guid: 23f3728b2c68266468eb8ffeee8f0389, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.62
+      value: 2.59
       objectReference: {fileID: 0}
     - target: {fileID: 4551962310098055846, guid: 23f3728b2c68266468eb8ffeee8f0389, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5125,6 +5125,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8596049627106597886, guid: 23f3728b2c68266468eb8ffeee8f0389, type: 3}
+      propertyPath: shockwavePrefab
+      value: 
+      objectReference: {fileID: 3350182032799395985, guid: 31e76e8c9e5f55745acca37e59873647, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25732,7 +25736,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3295464754326314961, guid: 4a08e05840cb114478d3fd3f75c8a846, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875231136326009089, guid: 4a08e05840cb114478d3fd3f75c8a846, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
