@@ -9,7 +9,7 @@ public class TransitionPieces : MonoBehaviour
     [Tooltip("Nom exact de la scène à charger")]
     [SerializeField] private string sceneName;
 
-    [Tooltip("Temps d'attente avant le chargement")]
+    [Tooltip("Temps d'attente avant le chargement (Laisse le temps de lire le bonus)")]
     [SerializeField] private float waitDuration = 3.0f;
 
     [Header("Conditions de Sortie")]
@@ -18,7 +18,6 @@ public class TransitionPieces : MonoBehaviour
 
     private bool estEnTransition = false;
 
-
     [Header("Récompenses (Loot)")]
     [Tooltip("Cochez si cette porte donne une récompense aléatoire")]
     public bool donneUneRecompense = true;
@@ -26,9 +25,7 @@ public class TransitionPieces : MonoBehaviour
     [Tooltip("Glissez ici tous les bienfaits que le joueur peut gagner via cette porte")]
     public List<Bienfait> poolDeBienfaits;
 
-    [Header("UI Feedback")]
-    // Glisse ici l'objet Canvas qui contient le script NotificationUI
-    public NotificationUI notificationSystem;
+    // J'AI SUPPRIMÉ LA VARIABLE "notificationSystem" ICI CAR ELLE EST INUTILE MAINTENANT
 
 
     // --- METHODE 1 : Clic (XR Simple Interactable) ---
@@ -57,6 +54,7 @@ public class TransitionPieces : MonoBehaviour
             if (GameObject.FindGameObjectsWithTag("Enemy").Length > 0)
             {
                 Debug.Log("Il reste des ennemis !");
+                // Optionnel : Jouer un son "Porte Verrouillée" ici
                 return;
             }
         }
@@ -82,9 +80,7 @@ public class TransitionPieces : MonoBehaviour
 
             foreach (Bienfait b in poolDeBienfaits)
             {
-                // La condition stricte : 
-                // Est-ce que ce nom apparaît dans le livre d'histoire ?
-                // Si NON, alors on peut le gagner.
+                // On vérifie si le joueur a DÉJÀ eu ce bienfait dans l'histoire de sa partie
                 if (!Player.historiqueDesBienfaits.Contains(b.nom))
                 {
                     candidatsValides.Add(b);
@@ -97,15 +93,22 @@ public class TransitionPieces : MonoBehaviour
                 int indexAleatoire = Random.Range(0, candidatsValides.Count);
                 Bienfait bienfaitGagne = candidatsValides[indexAleatoire];
 
-                // Pas de visuel, juste des maths !
+                // Application des stats
                 playerScript.AjouterBienfait(bienfaitGagne);
 
-                if (notificationSystem != null)
+                // --- ETAPE 3 : Affichage UI (Automatique) ---
+                // On cherche le script NotificationUI sur le joueur ou ses enfants (Camera)
+                NotificationUI uiDuJoueur = playerObj.GetComponentInChildren<NotificationUI>();
+
+                if (uiDuJoueur != null)
                 {
-                    notificationSystem.AfficherMessage("Bienfait obtenu :\n" + bienfaitGagne.nom);
+                    uiDuJoueur.AfficherMessage("Bienfait obtenu :\n" + bienfaitGagne.nom);
+                }
+                else
+                {
+                    Debug.LogWarning("Pas de NotificationUI trouvé sur le Player !");
                 }
             }
-
             else
             {
                 Debug.Log("Le joueur a déjà épuisé tous les bienfaits disponibles dans cette porte !");
@@ -113,17 +116,14 @@ public class TransitionPieces : MonoBehaviour
         }
     }
 
-
-
-
-
     IEnumerator TransitionRoutine()
     {
         estEnTransition = true;
         Debug.Log("Transition autorisée. Chargement de : " + sceneName);
 
-        // TODO : Lancer le Fade Out ici
+        // TODO : Lancer le Fade Out ici (Fondu au noir)
 
+        // On attend que le joueur ait le temps de lire le message
         yield return new WaitForSeconds(waitDuration);
 
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
