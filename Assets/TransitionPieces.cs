@@ -102,7 +102,7 @@ public class TransitionPieces : MonoBehaviour
 
                 if (uiDuJoueur != null)
                 {
-                    uiDuJoueur.AfficherMessage("Bienfait obtenu :\n" + bienfaitGagne.nom);
+                    uiDuJoueur.AfficherMessage("Bienfait obtenu :\n" + bienfaitGagne.nom, bienfaitGagne.icone);
                 }
                 else
                 {

@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbeb7cba3c582224e929d2991e01a85b, type: 3}
   m_Name: Degats Base
   m_EditorClassIdentifier: 
-  nom: 
+  nom: + Degats Base
+  icone: {fileID: 21300000, guid: 701a2d5ef8d605842a2a717d5b39f456, type: 3}
   description: 
   estPermanent: 0
+  estUnique: 1
   bonusDegatsBase: 5

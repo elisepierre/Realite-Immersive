@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14c20a178f328674595e29413c3ab1ae, type: 3}
   m_Name: Invincibilite
   m_EditorClassIdentifier: 
-  nom: 
+  nom: Invincible
+  icone: {fileID: 21300000, guid: 1eef33699f08dee4a8242ff0d14fe3fa, type: 3}
   description: 
   estPermanent: 0
+  estUnique: 1

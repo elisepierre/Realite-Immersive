@@ -2,15 +2,16 @@ using UnityEngine;
 
 public abstract class Bienfait : ScriptableObject
 {
+    [Header("Infos Visuelles")] // <-- Ajout pour faire joli
     public string nom;
+    public Sprite icone; // <-- AJOUTE CETTE LIGNE (L'image du bienfait)
+
     [TextArea] public string description;
 
-    [Tooltip("Coche cette case si le bonus doit rester après la mort (Roguelite progression).")]
+    [Header("Règles")]
     public bool estPermanent = false;
+    public bool estUnique = true;
 
-    // Appelé quand on ramasse l'objet
     public abstract void Appliquer(Player joueur);
-
-    // Appelé quand on meurt (pour nettoyer les stats)
     public abstract void Retirer(Player joueur);
 }

@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9baa6643d01e114bb59c00df732cdbb, type: 3}
   m_Name: Malus attaque ennemis
   m_EditorClassIdentifier: 
-  nom: 
+  nom: '- Attaque ennemi'
+  icone: {fileID: 21300000, guid: 76ad241522579db48ad92a984924d38b, type: 3}
   description: 
   estPermanent: 0
+  estUnique: 1
   pourcentage: 0.1

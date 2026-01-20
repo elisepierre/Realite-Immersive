@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5969a75c1d74d934e8e39e8273c39b82, type: 3}
   m_Name: Vie Max
   m_EditorClassIdentifier: 
-  nom: 
+  nom: + Vie Max
+  icone: {fileID: 21300000, guid: 507568df377e4fa42bb107770b8427c0, type: 3}
   description: 
   estPermanent: 0
+  estUnique: 1

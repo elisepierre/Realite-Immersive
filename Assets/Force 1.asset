@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ade7c0e68bbd7343ba58212652a2ea4, type: 3}
   m_Name: Force 1
   m_EditorClassIdentifier: 
-  nom: 
+  nom: + Force
+  icone: {fileID: 21300000, guid: 0dff5cf29aee6a648b53e2858211abbf, type: 3}
   description: 
   estPermanent: 0
+  estUnique: 1

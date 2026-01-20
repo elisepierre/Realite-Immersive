@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d54d42cc1c71285498dcb4fd32a6f26f, type: 3}
   m_Name: Vitesse
   m_EditorClassIdentifier: 
-  nom: 
+  nom: + Vitesse
+  icone: {fileID: 21300000, guid: 29a86dab19e73da44b70ce02f0759465, type: 3}
   description: 
   estPermanent: 0
+  estUnique: 1
