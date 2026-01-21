@@ -7,6 +7,7 @@ public class PlayerHitZone : MonoBehaviour
 
     private PlayerHealth playerHealth;
     private bool isDamaging = false;
+    private bool blessingTriggered = false;
 
     private void Awake()
     {
@@ -15,23 +16,30 @@ public class PlayerHitZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(enemyTag))
+        if (!other.CompareTag(enemyTag))
+            return;
+
+        if (!isDamaging)
         {
-            if (!isDamaging)
-            {
-                isDamaging = true;
-                StartCoroutine(DamageOverTime());
-            }
+            isDamaging = true;
+            StartCoroutine(DamageOverTime());
+        }
+
+        if (!blessingTriggered)
+        {
+            blessingTriggered = true;
+            playerHealth.ActivateSlowEnemiesBlessing();
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag(enemyTag))
-        {
-            StopAllCoroutines();
-            isDamaging = false;
-        }
+        if (!other.CompareTag(enemyTag))
+            return;
+
+        StopAllCoroutines();
+        isDamaging = false;
+        blessingTriggered = false;
     }
 
     private System.Collections.IEnumerator DamageOverTime()

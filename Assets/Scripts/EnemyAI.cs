@@ -6,17 +6,20 @@ using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
     public Transform player;
-    
+
     [Header("Distances")]
     public float activationDistance = 10f;
     public float dashDistance = 3f;
+
+    [Header("Movement Speed")]
+    public float baseMoveSpeed = 3.5f;
 
     [Header("Dash Settings")]
     public float dashSpeed = 12f;
     public float dashDuration = 0.25f;
     public float dashPreparationTime = 0.4f;
     public float dashCooldown = 2f;
-    
+
     [Header("Rotation")]
     public float rotationSpeed = 10f;
 
@@ -26,41 +29,50 @@ public class EnemyAI : MonoBehaviour
     private bool isPreparingDash = false;
     private bool isDashing = false;
     private bool canDash = true;
-    private float dashTimer = 0f;
+
+    private float speedMultiplier = 1f;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
 
-        rb.isKinematic = true; 
+        rb.isKinematic = true;
         rb.freezeRotation = true;
 
-        agent.updateRotation = false; 
+        agent.updateRotation = false;
+        agent.speed = baseMoveSpeed;
 
         if (player == null)
         {
             GameObject cam = GameObject.FindWithTag("MainCamera");
-            if (cam != null) player = cam.transform;
+            if (cam != null)
+                player = cam.transform;
+        }
+
+        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+        if (playerHealth != null && playerHealth.IsSlowBlessingActive)
+        {
+            ApplySlowBlessing(true);
         }
     }
 
     private void Update()
     {
-        if (player == null) return;
+        if (player == null)
+            return;
 
         float distance = Vector3.Distance(transform.position, player.position);
 
         if (!isDashing)
-        {
             RotateTowards(player.position);
-        }
 
-        if (isDashing || isPreparingDash) return;
+        if (isDashing || isPreparingDash)
+            return;
 
         if (distance > activationDistance)
         {
-            if (agent.enabled) agent.isStopped = true;
+            agent.isStopped = true;
             return;
         }
 
@@ -70,49 +82,51 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        if (agent.enabled)
-        {
-            agent.isStopped = false;
-            agent.SetDestination(player.position);
-        }
+        agent.isStopped = false;
+        agent.SetDestination(player.position);
     }
 
     private void RotateTowards(Vector3 targetPosition)
     {
         Vector3 direction = (targetPosition - transform.position).normalized;
-        direction.y = 0;
+        direction.y = 0f;
 
-        if (direction != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            targetRotation *= Quaternion.Euler(0, 180, 0);
-            
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        }
+        if (direction == Vector3.zero)
+            return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        targetRotation *= Quaternion.Euler(0f, 180f, 0f);
+
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            targetRotation,
+            rotationSpeed * Time.deltaTime
+        );
     }
 
     private System.Collections.IEnumerator PrepareDash()
     {
         isPreparingDash = true;
         canDash = false;
-        agent.isStopped = true; 
+        agent.isStopped = true;
 
         yield return new WaitForSeconds(dashPreparationTime);
 
         isPreparingDash = false;
         isDashing = true;
-        dashTimer = dashDuration;
 
-        agent.enabled = false; 
+        agent.enabled = false;
         rb.isKinematic = false;
 
         Vector3 dashDir = (player.position - transform.position).normalized;
-        dashDir.y = 0;
+        dashDir.y = 0f;
 
-        while (dashTimer > 0f)
+        float timer = dashDuration;
+
+        while (timer > 0f)
         {
             rb.velocity = dashDir * dashSpeed;
-            dashTimer -= Time.deltaTime;
+            timer -= Time.deltaTime;
             yield return null;
         }
 
@@ -122,9 +136,11 @@ public class EnemyAI : MonoBehaviour
     private void StopDash()
     {
         isDashing = false;
+
         rb.velocity = Vector3.zero;
         rb.isKinematic = true;
-        agent.enabled = true; 
+
+        agent.enabled = true;
 
         StartCoroutine(DashCooldownRoutine());
     }
@@ -133,5 +149,12 @@ public class EnemyAI : MonoBehaviour
     {
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
+    }
+
+
+    public void ApplySlowBlessing(bool active)
+    {
+        speedMultiplier = active ? 0.3f : 1f;
+        agent.speed = baseMoveSpeed * speedMultiplier;
     }
 }

@@ -10,6 +10,7 @@ TagManager:
   - MiniWorldCamera
   - Water
   - Enemy
+  - Bienfait
   layers:
   - Default
   - TransparentFX
