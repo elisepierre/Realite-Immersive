@@ -1,26 +1,51 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PositionneJoueur : MonoBehaviour
 {
-    void Start()
+    void OnEnable()
+    {
+        // On s'abonne à l'événement "Une scène a fini de charger"
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        // On se désabonne pour éviter les erreurs si l'objet est détruit
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // Cette fonction est appelée automatiquement par Unity à chaque changement de scène
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SePlacerAuSpawn();
+    }
+
+    void SePlacerAuSpawn()
     {
         GameObject pointDeSpawn = GameObject.FindGameObjectWithTag("Respawn");
 
         if (pointDeSpawn != null)
         {
-            // On récupère la position cible
+            // Désactiver le Character Controller le temps du téléport (sinon il résiste)
+            CharacterController cc = GetComponent<CharacterController>();
+            if (cc != null) cc.enabled = false;
+
+            // Calcul de position
             Vector3 positionCible = pointDeSpawn.transform.position;
+            positionCible.y += 0.05f; // Petite marge de sécurité
 
-            // CORRECTIF : On ajoute un tout petit peu de hauteur (0.05f = 5cm)
-            // pour être sûr de ne pas être coincé dans le sol
-            positionCible.y += 0.05f;
-
+            // Téléportation
             transform.position = positionCible;
 
-            // On garde la rotation (mais on s'assure de ne pas être penché)
-            // On ne prend que la rotation Y (gauche/droite) du spawn
+            // Rotation (On garde Y uniquement)
             Vector3 rotationCible = pointDeSpawn.transform.rotation.eulerAngles;
             transform.rotation = Quaternion.Euler(0, rotationCible.y, 0);
+
+            // Réactiver le Character Controller
+            if (cc != null) cc.enabled = true;
+
+            Debug.Log("Joueur replacé au spawn de la scène : " + SceneManager.GetActiveScene().name);
         }
     }
 }
