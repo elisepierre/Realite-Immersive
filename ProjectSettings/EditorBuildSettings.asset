@@ -14,4 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Scene boss.unity
     guid: e976e58c648d34b1b83dfe261eb226f6
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 309a722ddfec141c38afcbb1ce40ecc1,
+      type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 0f306d532c6a64bb29c447adcd8e9484,
+      type: 2}
