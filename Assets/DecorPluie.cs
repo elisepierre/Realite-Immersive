@@ -24,11 +24,11 @@ public class DecorPluie : MonoBehaviour
     {
         if (meteoritePrefab == null) return;
 
-        // Position aléatoire dans un cercle
+        // Position aleatoire dans un cercle
         Vector2 cercle = Random.insideUnitCircle * rayonZone;
         Vector3 pos = transform.position + new Vector3(cercle.x, hauteurChute, cercle.y);
 
-        // On crée la météorite
+        // On cree la meteorite
         Instantiate(meteoritePrefab, pos, Quaternion.identity);
     }
 }

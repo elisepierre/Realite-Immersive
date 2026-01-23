@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.XR; // <--- INDISPENSABLE pour la VR standard
+using UnityEngine.XR;
 
 public class HypnosDialogue : MonoBehaviour
 {
@@ -22,7 +22,7 @@ public class HypnosDialogue : MonoBehaviour
     private int indexPhrase = 0;
     private bool estOuvert = false;
 
-    // Pour éviter que le dialogue défile à toute vitesse
+    // step by step
     private bool boutonVREtaitAppuye = false; 
 
     void Start()
@@ -35,30 +35,25 @@ public class HypnosDialogue : MonoBehaviour
     void Update()
     {
         if (leJoueur == null) return;
-
-        // --- GESTION INPUT VR UNIVERSELLE ---
         bool inputVRActif = false;
         
-        // On récupère la manette droite
         InputDevice device = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
         
-        // On vérifie si le bouton "Primary" (Bouton A sur Quest) est appuyé
         bool isPressed = false;
         if (device.TryGetFeatureValue(CommonUsages.primaryButton, out isPressed))
         {
-            // On veut déclencher l'action SEULEMENT au moment où on appuie (GetDown), pas si on maintient
             if (isPressed && !boutonVREtaitAppuye)
             {
                 inputVRActif = true;
             }
-            boutonVREtaitAppuye = isPressed; // On mémorise l'état pour la frame suivante
+            boutonVREtaitAppuye = isPressed; // On memorise l'etat pour la frame suivante
         }
 
-        // --- COMBINAISON CLAVIER + VR ---
+        // COMBINAISON CLAVIER + VR 
         bool actionValidee = Input.GetKeyDown(KeyCode.E) || inputVRActif;
 
 
-        // --- LOGIQUE DIALOGUE ---
+        // LOGIQUE DIALOGUE
         float distance = Vector3.Distance(transform.position, leJoueur.position);
 
         if (distance <= distanceInteraction && actionValidee && !estOuvert)
@@ -74,8 +69,8 @@ public class HypnosDialogue : MonoBehaviour
 
             // Oriente le Canvas vers le joueur
             Transform cam = Camera.main.transform;
-            dialogueCanvas.transform.LookAt(dialogueCanvas.transform.position  /*+ cam.rotation * Vector3.forward,cam.rotation * Vector3.up
-                                            */);
+            dialogueCanvas.transform.LookAt(dialogueCanvas.transform.position  + cam.rotation * Vector3.forward,cam.rotation * Vector3.up
+                                            );
         }
     }
 

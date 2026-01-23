@@ -5,39 +5,35 @@ using UnityEngine;
 public class EpeeDegats : MonoBehaviour
 {
     [Header("Réglages")]
-    public int degats = 10;              // Dégâts par coup
-    public float delaiEntreCoups = 0.5f; // Temps min entre deux coups (pour éviter le spam)
+    public int degats = 10;              // Degats par coup
+    public float delaiEntreCoups = 0.5f; // Temps min entre deux coups 
 
     [Header("Audio (Optionnel)")]
-    public AudioSource sonImpact;        // Glisse ton AudioSource ici
+    public AudioSource sonImpact;       
 
-    private float dernierCoup = 0f;      // Timer interne
+    private float dernierCoup = 0f;  
 
-    // Cette fonction se déclenche quand l'épée touche physiquement un objet
+    //epee touche physiquement un objet
     void OnCollisionEnter(Collision collision)
     {
-        // 1. Vérification du délai (Anti-spam)
+        // Verification du delai
         if (Time.time - dernierCoup < delaiEntreCoups) return;
 
-        // 2. Recherche du script HadesAI sur l'objet touché
+        // Recherche du script HadesAI sur l'objet touche à mettre pour chaque ennemi à faire apres fin j'espere
         HadesAI boss = collision.gameObject.GetComponent<HadesAI>();
 
-        // Si on ne le trouve pas directement (ex: on a touché le bras), on cherche sur le parent
+        
         if (boss == null)
         {
             boss = collision.gameObject.GetComponentInParent<HadesAI>();
         }
 
-        // 3. Si on a trouvé le boss, on tape !
+        // on tape 
         if (boss != null)
-        {
-            // Mise à jour du timer
+        { 
             dernierCoup = Time.time;
 
-            // Application des dégâts
             boss.PrendreDegats(degats);
-
-            // Son
             if (sonImpact != null)
             {
                 sonImpact.Play();

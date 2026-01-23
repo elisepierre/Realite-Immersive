@@ -12,10 +12,10 @@ public class MannequinIA : MonoBehaviour
 
     [Header("Réglages Distances")]
     public float distanceVision = 35.0f;
-    // J'ai retiré distanceAttaque car c'est l'arme qui décide de la portée maintenant
+
 
     [Header("Réglages Combat & Vie")]
-    public float maxHealth = 100f; // J'ai augmenté la vie pour tester les gros dégâts
+    public float maxHealth = 100f; 
     private float currentHealth;
     
     [Header("Résistances (0.5 = Résistant, 2.0 = Faible)")]
@@ -40,14 +40,14 @@ public class MannequinIA : MonoBehaviour
 
     void Update()
     {
-        // 1. RÉGÉNÉRATION
+        //RÉGÉNÉRATION
         if (estEnRegeneration)
         {
             RegenererVie();
             return;
         }
 
-        // 2. LOGIQUE DE MOUVEMENT (Regarder le joueur)
+        //MOUVEMENT
         float distance = Vector3.Distance(transform.position, leJoueur.position);
         if (distance < distanceVision)
         {
@@ -60,16 +60,15 @@ public class MannequinIA : MonoBehaviour
             leCerveau.SetBool("IsGuarding", false);
         }
         
-        // NOTE : J'ai supprimé la partie "Distance < Attaque" ici.
-        // C'est maintenant le script de l'épée qui déclenche les dégâts lors du choc.
+
     }
 
-    // Cette fonction est appelée par le script de l'arme (VRWeapon)
+ 
     public void PrendreDegats(int degatsBruts, WeaponType typeArme)
     {
-        if (estEnRegeneration) return; // On ne tape pas une ambulance
+        if (estEnRegeneration) return;
 
-        // A. Calcul des résistances
+        //Calcul des résistances
         float multiplicateur = 1.0f;
         switch (typeArme)
         {
@@ -80,7 +79,7 @@ public class MannequinIA : MonoBehaviour
 
         int degatsFinaux = Mathf.RoundToInt(degatsBruts * multiplicateur);
 
-        // B. Appliquer les dégâts
+        // Appliquer les degats
         currentHealth -= degatsFinaux;
         if(barreDeVie != null) barreDeVie.value = currentHealth;
 
@@ -88,44 +87,36 @@ public class MannequinIA : MonoBehaviour
         leCerveau.SetTrigger("GetHit");
         Debug.Log($"Aïe ! Reçu {degatsFinaux} dégâts ({typeArme}). Vie: {currentHealth}");
 
-        // D. Pop-up de dégâts
+        // Pop-up de degats
         if(texteDegatPrefab != null)
         {
             Vector3 positionPopUp = transform.position + Vector3.up * 2f; 
             GameObject popup = Instantiate(texteDegatPrefab, positionPopUp, Quaternion.identity);
             
-            // Si ton prefab a un composant TextMeshPro, on met le chiffre à jour
+            
             TMP_Text tmp = popup.GetComponentInChildren<TMP_Text>();
             if(tmp != null) tmp.text = degatsFinaux.ToString();
         }
 
-        // E. Recul physique
-        /*
-        if(rb != null)
-        {
-            Vector3 directionRecul = (transform.position - leJoueur.position).normalized;
-            rb.AddForce(directionRecul * 3f, ForceMode.Impulse);
-        }
-        */
-        // F. Mort / KO
+        //  Mort / KO
         if (currentHealth <= 0)
         {
             estEnRegeneration = true;
             leCerveau.SetBool("IsGuarding", false);
-            // Optionnel : Jouer anim de mort ici
+            //anim de mort si je l'ajoute
         }
     }
 
     void RegenererVie()
     {
-        currentHealth += Time.deltaTime * 20; // Remonte vite pour le test
+        currentHealth += Time.deltaTime * 20;
         if(barreDeVie != null) barreDeVie.value = currentHealth;
 
         if (currentHealth >= maxHealth)
         {
             currentHealth = maxHealth;
             estEnRegeneration = false;
-            //leCerveau.SetTrigger("Revive"); // Si tu as une anim de réveil
+            //leCerveau.SetTrigger("Revive"); // Si je remet l'anim revive
         }
     }
 }
