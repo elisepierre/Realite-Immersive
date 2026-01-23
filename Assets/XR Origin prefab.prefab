@@ -412,7 +412,6 @@ GameObject:
   - component: {fileID: 1580380410323633504}
   - component: {fileID: 1023697315070321695}
   - component: {fileID: 2763817131271844903}
-  - component: {fileID: 5365297616869441013}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -504,20 +503,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &5365297616869441013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9218446375444081530}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68b5910cee1f89a4ab8f5c4d26e9b686, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BarreBienfaits: {fileID: 3372009952285655130}
-  ModeleIcone: {fileID: 3827423877602696542}
 --- !u!1001 &648030837192694590
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -847,7 +832,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   multiplicateurVitesseEnnemis: 1
   multiplicateurEnnemis: 1
-  hudScript: {fileID: 5365297616869441013}
+  hudScript: {fileID: 0}
   vie: 100
   degatsBase: 5
   bonusDegats: 20

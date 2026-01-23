@@ -1,55 +1,51 @@
-using System.Collections;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI; // <-- TRES IMPORTANT pour gérer les Images UI
+using UnityEngine.UI;
+using System.Collections;
 
 public class NotificationUI : MonoBehaviour
 {
-    [Header("Elements UI")]
-    public TextMeshProUGUI texteAffiche;
-    public Image imageIcone; // <-- NOUVELLE VARIABLE pour l'image
+    [Header("Références UI")]
+    public TextMeshProUGUI messageText;
+    public Image iconImage;
 
     [Header("Réglages")]
     public float dureeAffichage = 3.0f;
-    private Canvas canvasParent;
 
-    void Start()
+    // Cette fonction est appelée par la Porte ou le Player
+    public void AfficherMessage(string message, Sprite icone = null)
     {
-        canvasParent = GetComponent<Canvas>();
-        CacherMessage();
-    }
+        // 1. On remplit les infos
+        if (messageText != null) messageText.text = message;
 
-    // LA FONCTION CHANGE : Elle demande maintenant un Sprite en plus du message
-    public void AfficherMessage(string message, Sprite nouvelleIcone)
-    {
-        StopAllCoroutines(); // Sécurité si on enchaîne deux messages vite
-        StartCoroutine(RoutineMessage(message, nouvelleIcone));
-    }
-
-    IEnumerator RoutineMessage(string message, Sprite nouvelleIcone)
-    {
-        // 1. Mise à jour du contenu
-        if (texteAffiche != null) texteAffiche.text = message;
-
-        if (imageIcone != null)
+        if (iconImage != null && icone != null)
         {
-            imageIcone.sprite = nouvelleIcone;
-            // Si le bienfait n'a pas d'icône, on cache l'image pour ne pas avoir un carré blanc moche
-            imageIcone.gameObject.SetActive(nouvelleIcone != null);
+            iconImage.sprite = icone;
+            iconImage.gameObject.SetActive(true);
+        }
+        else if (iconImage != null)
+        {
+            // Si pas d'icône fournie, on cache l'image pour ne pas avoir un carré blanc
+            iconImage.gameObject.SetActive(false);
         }
 
-        // 2. Affichage
-        if (canvasParent != null) canvasParent.enabled = true;
+        // 2. On s'assure que le Panel est visible (au cas où il était éteint)
+        this.gameObject.SetActive(true);
 
-        // 3. Attente
-        yield return new WaitForSeconds(dureeAffichage);
+        // 3. On arrête les anciens comptes à rebours s'il y en avait
+        StopAllCoroutines();
 
-        // 4. On cache
-        CacherMessage();
+        // 4. On lance le nouveau compte à rebours
+        StartCoroutine(CacherApresDelai());
     }
 
-    private void CacherMessage()
+    IEnumerator CacherApresDelai()
     {
-        if (canvasParent != null) canvasParent.enabled = false;
+        // On attend X secondes
+        yield return new WaitForSeconds(dureeAffichage);
+
+        // On éteint l'objet sur lequel ce script est posé (Le Panel_Notification)
+        // Le Canvas et la BarreBienfaits resteront allumés !
+        this.gameObject.SetActive(false);
     }
 }

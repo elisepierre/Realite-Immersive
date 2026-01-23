@@ -98,7 +98,7 @@ public class TransitionPieces : MonoBehaviour
 
                 // --- ETAPE 3 : Affichage UI (Automatique) ---
                 // On cherche le script NotificationUI sur le joueur ou ses enfants (Camera)
-                NotificationUI uiDuJoueur = playerObj.GetComponentInChildren<NotificationUI>();
+                NotificationUI uiDuJoueur = playerObj.GetComponentInChildren<NotificationUI>(true);
 
                 if (uiDuJoueur != null)
                 {
