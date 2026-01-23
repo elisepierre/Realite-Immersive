@@ -5215,6 +5215,10 @@ PrefabInstance:
       propertyPath: activationDistance
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 8922941737864060570, guid: 23f3728b2c68266468eb8ffeee8f0389, type: 3}
+      propertyPath: m_Speed
+      value: 2.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25857,6 +25861,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7839000742531628445, guid: 4a08e05840cb114478d3fd3f75c8a846, type: 3}
+      propertyPath: m_Speed
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 361776245309872123, guid: 4a08e05840cb114478d3fd3f75c8a846, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.034769893
@@ -26105,6 +26113,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.677
       objectReference: {fileID: 0}
+    - target: {fileID: 2378714508962401701, guid: 5be2c09a4d45d634e881c6af424a0af3, type: 3}
+      propertyPath: baseMoveSpeed
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2493446124775617089, guid: 5be2c09a4d45d634e881c6af424a0af3, type: 3}
       propertyPath: m_Name
       value: Meshy_AI_Fiery_Skull_0123074941_texture
@@ -26156,6 +26168,10 @@ PrefabInstance:
     - target: {fileID: 3523081556149700019, guid: 5be2c09a4d45d634e881c6af424a0af3, type: 3}
       propertyPath: m_LocalPosition.z
       value: -0.677
+      objectReference: {fileID: 0}
+    - target: {fileID: 7305549349936610048, guid: 5be2c09a4d45d634e881c6af424a0af3, type: 3}
+      propertyPath: maxHealth
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 8746581336087605116, guid: 5be2c09a4d45d634e881c6af424a0af3, type: 3}
       propertyPath: m_IsActive
@@ -27757,6 +27773,10 @@ PrefabInstance:
     - target: {fileID: 6162096235023501692, guid: 0f1280fcff742044388c8dc3afb3ad8b, type: 3}
       propertyPath: m_Name
       value: FireGolemElemental@Orc Idle
+      objectReference: {fileID: 0}
+    - target: {fileID: 6162096235023501692, guid: 0f1280fcff742044388c8dc3afb3ad8b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6831953265411314630, guid: 0f1280fcff742044388c8dc3afb3ad8b, type: 3}
       propertyPath: m_LocalPosition.x
