@@ -16,9 +16,7 @@ public class GolemRoarAttack : MonoBehaviour
             {
                 PlayerHealth ph = hit.GetComponent<PlayerHealth>();
                 if (ph != null)
-                {
                     ph.TakeDamage(roarDamage);
-                }
             }
         }
     }

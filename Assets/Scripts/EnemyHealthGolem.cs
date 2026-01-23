@@ -2,28 +2,32 @@ using UnityEngine;
 
 public class EnemyHealthGolem : MonoBehaviour
 {
-    public float maxHealth = 100f;
-    private float currentHealth;
+    public float maxHealth = 200f;
+    public float currentHealth;
 
-    private EnemyAIAnimatorGolem enemyAI;
+    public bool isEnraged = false;
+
+    private EnemyAIAnimatorGolem ai;
 
     private void Start()
     {
         currentHealth = maxHealth;
-        enemyAI = GetComponent<EnemyAIAnimatorGolem>();
+        ai = GetComponent<EnemyAIAnimatorGolem>();
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float amount)
     {
-        currentHealth -= damage;
+        currentHealth -= amount;
+
+        if (!isEnraged && currentHealth <= maxHealth * 0.3f)
+        {
+            isEnraged = true;
+            ai.EnterEnrageMode();
+        }
 
         if (currentHealth <= 0f)
-            Die();
-    }
-
-    private void Die()
-    {
-        enemyAI?.Die();
-        Destroy(gameObject, 4f);
+        {
+            ai.Die();
+        }
     }
 }

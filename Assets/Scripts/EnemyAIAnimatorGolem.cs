@@ -85,6 +85,19 @@ public class EnemyAIAnimatorGolem : MonoBehaviour
         animator.SetBool("IsWalking", true);
     }
 
+    public void EnterEnrageMode()
+    {
+        agent.speed *= 1.5f;
+        attackCooldown *= 0.6f;
+        roarCooldown *= 0.5f;
+
+        animator.SetTrigger("Enrage");
+
+        GolemFlameAura aura = GetComponent<GolemFlameAura>();
+        if (aura != null)
+            aura.StartAura();
+    }
+
     public void Die()
     {
         if (isDead)

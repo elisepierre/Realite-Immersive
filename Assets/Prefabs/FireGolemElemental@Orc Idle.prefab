@@ -191,6 +191,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4f0acf81d952f464194526abc5d849b4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2952565501391081791}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4f0acf81d952f464194526abc5d849b4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5607578531012468606}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4f0acf81d952f464194526abc5d849b4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 803667106411409882}
   m_SourcePrefab: {fileID: 100100000, guid: 4f0acf81d952f464194526abc5d849b4, type: 3}
 --- !u!1 &6162096235023501692 stripped
 GameObject:
@@ -262,6 +268,7 @@ MonoBehaviour:
   activationDistance: 10
   attackDistance: 1.8
   attackCooldown: 1.2
+  roarCooldown: 12
 --- !u!114 &3320044839277989237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,6 +282,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 300
+  currentHealth: 0
+  isEnraged: 0
 --- !u!136 &2952565501391081791
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -298,6 +307,37 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &-5607578531012468606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6162096235023501692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d7adf4841a30e2479788631c97ae0db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  auraRadius: 3
+  auraDamage: 5
+  tickRate: 0.5
+  playerTag: MainCamera
+--- !u!114 &803667106411409882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6162096235023501692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d42e182088f7634ead46dae7fa54ea6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roarRadius: 6
+  roarDamage: 20
+  playerTag: MainCamera
 --- !u!4 &6831953265411314630 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4f0acf81d952f464194526abc5d849b4, type: 3}
