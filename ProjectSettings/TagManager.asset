@@ -11,6 +11,7 @@ TagManager:
   - Water
   - Enemy
   - Bienfait
+  - Golem
   layers:
   - Default
   - TransparentFX

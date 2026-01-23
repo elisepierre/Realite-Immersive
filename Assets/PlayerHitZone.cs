@@ -4,10 +4,14 @@ using System.Collections;
 public class PlayerHitZone : MonoBehaviour
 {
     public float damageAmount = 10f;
+    public float golemDamageAmount = 25f;
+
     public string enemyTag = "Enemy";
+    public string golemTag = "Golem";
 
     private PlayerHealth playerHealth;
     private bool isDamaging = false;
+    private float currentDamage;
 
     private void Awake()
     {
@@ -16,8 +20,18 @@ public class PlayerHitZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag(enemyTag))
+        if (other.CompareTag(golemTag))
+        {
+            currentDamage = golemDamageAmount;
+        }
+        else if (other.CompareTag(enemyTag))
+        {
+            currentDamage = damageAmount;
+        }
+        else
+        {
             return;
+        }
 
         if (!isDamaging)
         {
@@ -28,7 +42,7 @@ public class PlayerHitZone : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (!other.CompareTag(enemyTag))
+        if (!other.CompareTag(enemyTag) && !other.CompareTag(golemTag))
             return;
 
         StopAllCoroutines();
@@ -39,7 +53,7 @@ public class PlayerHitZone : MonoBehaviour
     {
         while (true)
         {
-            playerHealth.TakeDamage(damageAmount);
+            playerHealth.TakeDamage(currentDamage);
             yield return new WaitForSeconds(1f);
         }
     }
