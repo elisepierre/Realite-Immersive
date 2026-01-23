@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
     public int nombreDash = 0;
     public float cooldownDash = 10;
     public float vitesseDeplacement = 10;
-    public float bonusVitesse = 10;
+    public float bonusVitesse = 1.5f;
 
     public List<Bienfait> bienfaitsActifs = new List<Bienfait>();
     public static List<string> historiqueDesBienfaits = new List<string>(); // cela marche meme apres la mort pour savoir les bienfaits qu'on a deja utilises par le passe
