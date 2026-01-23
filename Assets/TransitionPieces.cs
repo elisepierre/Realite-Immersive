@@ -18,6 +18,10 @@ public class TransitionPieces : MonoBehaviour
 
     private bool estEnTransition = false;
 
+    [Header("Visuel Activation")]
+    [Tooltip("Glisse ici l'objet 3D de la porte (celui qui a le MeshRenderer)")]
+    public Renderer renduPorte;
+
     [Header("Récompenses (Loot)")]
     [Tooltip("Cochez si cette porte donne une récompense aléatoire")]
     public bool donneUneRecompense = true;
@@ -25,8 +29,12 @@ public class TransitionPieces : MonoBehaviour
     [Tooltip("Glissez ici tous les bienfaits que le joueur peut gagner via cette porte")]
     public List<Bienfait> poolDeBienfaits;
 
-    // J'AI SUPPRIMÉ LA VARIABLE "notificationSystem" ICI CAR ELLE EST INUTILE MAINTENANT
+    [Tooltip("Choisis un rouge très vif. Coche HDR pour plus d'intensité.")]
+    [ColorUsage(true, true)] // Permet de choisir une couleur HDR (Brillante)
+    public Color couleurActive = new Color(1f, 0f, 0f, 1f) * 4;
 
+    private bool estAllumee = false;
+    private float timerVerification = 0f;
 
     // --- METHODE 1 : Clic (XR Simple Interactable) ---
     public void ChangerDeScene()
@@ -67,6 +75,55 @@ public class TransitionPieces : MonoBehaviour
 
         StartCoroutine(TransitionRoutine());
     }
+
+
+    void Start()
+    {
+        // Si on ne doit pas éliminer d'ennemis, on allume la porte tout de suite
+        if (!doitEliminerEnnemis)
+        {
+            AllumerPorte();
+        }
+    }
+
+    void Update()
+    {
+        // Si la porte est déjà allumée ou si on n'a pas besoin de tuer des ennemis, on ne fait rien
+        if (estAllumee || !doitEliminerEnnemis) return;
+
+        // OPTIMISATION : On ne vérifie qu'une fois par seconde (pas à chaque image)
+        timerVerification += Time.deltaTime;
+        if (timerVerification >= 1.0f)
+        {
+            timerVerification = 0f;
+            VerifierEnnemis();
+        }
+    }
+
+    void VerifierEnnemis()
+    {
+        // Si aucun ennemi n'est trouvé
+        if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
+        {
+            AllumerPorte();
+        }
+    }
+
+    void AllumerPorte()
+    {
+        estAllumee = true;
+
+        if (renduPorte != null)
+        {
+            // On active l'émission du matériau
+            renduPorte.material.EnableKeyword("_EMISSION");
+            renduPorte.material.SetColor("_EmissionColor", couleurActive);
+
+            // Petit son ou particule optionnel ici
+            Debug.Log("Salle nettoyée ! La porte brille.");
+        }
+    }
+
 
     private void DonnerBienfaitAleatoire()
     {

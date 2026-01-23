@@ -23511,6 +23511,7 @@ MonoBehaviour:
   sceneName: Scene boss
   waitDuration: 1
   doitEliminerEnnemis: 1
+  renduPorte: {fileID: 883195728}
   donneUneRecompense: 1
   poolDeBienfaits:
   - {fileID: 11400000, guid: f222ddd98576b1d4fbf95c08bef7a72c, type: 2}
@@ -23522,6 +23523,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 950a678f0a7b6bc4b9c9978087303d02, type: 2}
   - {fileID: 11400000, guid: 85e58427c3cc95c4f9688ac20a0d5c38, type: 2}
   - {fileID: 11400000, guid: 8d9a34af6fece134689000c201d10088, type: 2}
+  couleurActive: {r: 1.3490196, g: 0, b: 0, a: 4}
 --- !u!114 &883195727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23606,6 +23608,11 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+--- !u!23 &883195728 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5714436077940140917, guid: ca22afa6681c67b41a83ba17ea999b28, type: 3}
+  m_PrefabInstance: {fileID: 883195723}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &883951497
 PrefabInstance:
   m_ObjectHideFlags: 0

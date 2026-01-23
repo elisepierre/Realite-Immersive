@@ -4735,6 +4735,7 @@ MonoBehaviour:
   sceneName: DemoScene
   waitDuration: 3
   doitEliminerEnnemis: 0
+  renduPorte: {fileID: 1026737923}
   donneUneRecompense: 1
   poolDeBienfaits:
   - {fileID: 11400000, guid: f222ddd98576b1d4fbf95c08bef7a72c, type: 2}
@@ -4746,6 +4747,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 950a678f0a7b6bc4b9c9978087303d02, type: 2}
   - {fileID: 11400000, guid: 85e58427c3cc95c4f9688ac20a0d5c38, type: 2}
   - {fileID: 11400000, guid: 8d9a34af6fece134689000c201d10088, type: 2}
+  couleurActive: {r: 1.3490196, g: 0, b: 0, a: 4}
 --- !u!114 &1026737922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4830,6 +4832,11 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+--- !u!23 &1026737923 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 23863354656470082, guid: 4277c84f4eb45414089869ec9eed16a9, type: 3}
+  m_PrefabInstance: {fileID: 1026737919}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1044093177
 PrefabInstance:
   m_ObjectHideFlags: 0
