@@ -14,9 +14,7 @@ public class PlayerHealth : MonoBehaviour
 
     private Player playerStats;
 
-
-    private bool slowBlessingActive = false;
-    public bool IsSlowBlessingActive => slowBlessingActive;
+    public static bool SlowBlessingActive { get; private set; } = false;
 
     private void Awake()
     {
@@ -32,7 +30,6 @@ public class PlayerHealth : MonoBehaviour
         spawnPosition = respawnRoot.position;
         spawnRotation = respawnRoot.rotation;
     }
-
 
     public void TakeDamage(float damage)
     {
@@ -60,17 +57,17 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-
-    public void ActivateSlowEnemiesBlessing()
+    public void ActivateSlowBlessing()
     {
-        if (slowBlessingActive)
+        if (SlowBlessingActive)
             return;
 
-        slowBlessingActive = true;
+        SlowBlessingActive = true;
 
         EnemyAI[] enemies = FindObjectsOfType<EnemyAI>();
-
         foreach (EnemyAI enemy in enemies)
-            enemy.ApplySlowBlessing(true);
+            enemy.ApplyGlobalSlow();
+
+        Debug.Log("Slow Blessing ACTIVATED !");
     }
 }

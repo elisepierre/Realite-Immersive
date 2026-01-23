@@ -1,18 +1,18 @@
 using UnityEngine;
+using System.Collections;
 
-public class TestBienfaitVR : MonoBehaviour
+public class TestBlessingSpawner : MonoBehaviour
 {
-    public Bienfait bienfait;
+    public GameObject slowBlessingPickup;
 
-    private void OnTriggerEnter(Collider other)
+    private IEnumerator Start()
     {
-        // En VR, c'est souvent la main ou le corps qui touche
-        // On cherche le script Player sur l'objet qui entre ou ses parents
-        Player p = other.GetComponentInParent<Player>();
-        if(p != null)
+        yield return new WaitForSeconds(10f);
+
+        if (slowBlessingPickup != null)
         {
-            p.AjouterBienfait(bienfait);
-            gameObject.SetActive(false); // L'objet disparaît
+            slowBlessingPickup.transform.position =
+                GameObject.FindWithTag("MainCamera").transform.position;
         }
     }
 }

@@ -30,8 +30,6 @@ public class EnemyAI : MonoBehaviour
     private bool isDashing = false;
     private bool canDash = true;
 
-    private float speedMultiplier = 1f;
-
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -50,11 +48,15 @@ public class EnemyAI : MonoBehaviour
                 player = cam.transform;
         }
 
-        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
-        if (playerHealth != null && playerHealth.IsSlowBlessingActive)
+        if (PlayerHealth.SlowBlessingActive)
         {
-            ApplySlowBlessing(true);
+            ApplyGlobalSlow();
         }
+    }
+
+    public void ApplyGlobalSlow()
+    {
+        agent.speed = baseMoveSpeed * 0.3f;
     }
 
     private void Update()
@@ -149,12 +151,5 @@ public class EnemyAI : MonoBehaviour
     {
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
-    }
-
-
-    public void ApplySlowBlessing(bool active)
-    {
-        speedMultiplier = active ? 0.3f : 1f;
-        agent.speed = baseMoveSpeed * speedMultiplier;
     }
 }

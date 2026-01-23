@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerHitZone : MonoBehaviour
 {
@@ -7,7 +8,6 @@ public class PlayerHitZone : MonoBehaviour
 
     private PlayerHealth playerHealth;
     private bool isDamaging = false;
-    private bool blessingTriggered = false;
 
     private void Awake()
     {
@@ -24,12 +24,6 @@ public class PlayerHitZone : MonoBehaviour
             isDamaging = true;
             StartCoroutine(DamageOverTime());
         }
-
-        if (!blessingTriggered)
-        {
-            blessingTriggered = true;
-            playerHealth.ActivateSlowEnemiesBlessing();
-        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -39,14 +33,13 @@ public class PlayerHitZone : MonoBehaviour
 
         StopAllCoroutines();
         isDamaging = false;
-        blessingTriggered = false;
     }
 
-    private System.Collections.IEnumerator DamageOverTime()
+    private IEnumerator DamageOverTime()
     {
         while (true)
         {
-            playerHealth?.TakeDamage(damageAmount);
+            playerHealth.TakeDamage(damageAmount);
             yield return new WaitForSeconds(1f);
         }
     }
