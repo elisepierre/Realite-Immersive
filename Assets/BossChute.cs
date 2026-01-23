@@ -5,21 +5,21 @@ using UnityEngine;
 public class BossChute : MonoBehaviour
 {
     [Header("Réglages Impact")]
-    public float forceTremblement = 0.2f;
-    public float dureeTremblement = 0.5f;
-    public GameObject particulesImpact; // Glisse un prefab de poussière/explosion ici
-    public AudioSource sonImpact; // Glisse ton bruitage "BOUM" ici
+    public float forceTremblement = 0.1f; // Doux pour la VR
+    public float dureeTremblement = 0.3f;
+    public GameObject particulesImpact; // Ton effet de poussière/explosion
+    public AudioSource sonImpact;       // Le bruit "BOUM"
     
     [Header("Animation")]
     public Animator bossAnimator;
-    public string nomTriggerAtterrissage = "Land"; // Le nom du paramètre dans l'Animator
+    public string nomTriggerAtterrissage = "Land";
 
     private bool aAtterri = false;
 
     void OnCollisionEnter(Collision collision)
     {
-        // Si on touche le sol et qu'on n'a pas encore atterri
-        if (!aAtterri && (collision.gameObject.CompareTag("Ground") || collision.gameObject.name.Contains("Plane")))
+        // On vérifie qu'on touche le sol (Tag "Ground" ou nom contenant "Plane" ou "Terrain")
+        if (!aAtterri && (collision.gameObject.CompareTag("Ground") || collision.gameObject.name.Contains("Plane") || collision.gameObject.name.Contains("Terrain")))
         {
             FaireLImpact();
         }
@@ -28,30 +28,37 @@ public class BossChute : MonoBehaviour
     void FaireLImpact()
     {
         aAtterri = true;
-        Debug.Log("BOUM ! Le boss est au sol.");
+        Debug.Log("BOUM ! Hades a touché le sol.");
 
-        // 1. Lancer le tremblement (appelle le script de l'étape 1)
-        if (CameraShake.instance != null)
+        // --- 1. TREMBLEMENT VR ---
+        // On appelle notre script spécial VR
+        if (CameraShakeVR.instance != null)
         {
-            CameraShake.instance.Secouer(dureeTremblement, forceTremblement);
+            CameraShakeVR.instance.Secouer(dureeTremblement, forceTremblement);
+        }
+        else
+        {
+            Debug.LogWarning("Attention : Le script CameraShakeVR n'est pas trouvé dans la scène (sur XR Origin ?)");
         }
 
-        // 2. Jouer le son
+        // --- 2. AUDIO ---
         if (sonImpact != null) sonImpact.Play();
 
-        // 3. Créer des particules (poussière)
+        // --- 3. PARTICULES ---
         if (particulesImpact != null)
         {
-            Instantiate(particulesImpact, transform.position, Quaternion.identity);
+            // On fait apparaître la poussière aux pieds du boss (légèrement relevée)
+            Vector3 pos = transform.position;
+            pos.y += 0.1f; 
+            Instantiate(particulesImpact, pos, Quaternion.identity);
         }
 
-        // 4. Lancer l'animation d'atterrissage (passage de "Falling" à "Idle/Combat")
+        // --- 4. ANIMATION ---
         if (bossAnimator != null)
         {
             bossAnimator.SetTrigger(nomTriggerAtterrissage);
         }
-        
-        // Optionnel : Désactiver la gravité ou passer en Kinematic si le boss utilise un NavMesh après
-        // GetComponent<Rigidbody>().isKinematic = true; 
+
+        // NOTE : On ne lance plus l'IA ici, car HadesAI a son propre minuteur (les 21.57s) !
     }
 }
