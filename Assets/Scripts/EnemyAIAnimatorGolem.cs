@@ -14,6 +14,10 @@ public class EnemyAIAnimatorGolem : MonoBehaviour
     public float attackCooldown = 1.2f;
     private float nextAttackTime = 0f;
 
+    [Header("Roar Settings")]
+    public float roarCooldown = 8f;
+    private float nextRoarTime = 0f;
+
     private NavMeshAgent agent;
     private Animator animator;
     private bool isDead = false;
@@ -38,10 +42,22 @@ public class EnemyAIAnimatorGolem : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, player.position);
 
-        Vector3 dir = (player.position - transform.position);
+        Vector3 dir = player.position - transform.position;
         dir.y = 0f;
-        if (dir != Vector3.zero)
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 5f * Time.deltaTime);
+        if (dir.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 5f * Time.deltaTime);
+        }
+
+        if (distance <= activationDistance && Time.time >= nextRoarTime)
+        {
+            agent.isStopped = true;
+            animator.SetBool("IsWalking", false);
+            animator.SetTrigger("Roar");
+            nextRoarTime = Time.time + roarCooldown;
+            return;
+        }
 
         if (distance <= attackDistance)
         {
@@ -71,7 +87,8 @@ public class EnemyAIAnimatorGolem : MonoBehaviour
 
     public void Die()
     {
-        if (isDead) return;
+        if (isDead)
+            return;
 
         isDead = true;
         agent.enabled = false;
