@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class Player : MonoBehaviour
 {
@@ -35,6 +36,10 @@ public class Player : MonoBehaviour
     public List<Bienfait> bienfaitsActifs = new List<Bienfait>();
     public static List<string> historiqueDesBienfaits = new List<string>(); // cela marche meme apres la mort pour savoir les bienfaits qu'on a deja utilises par le passe
 
+
+    // Référence vers le système de déplacement VR
+    private ActionBasedContinuousMoveProvider moveProvider;
+
     public void AjouterBienfait(Bienfait b)
     {
         if (b != null)
@@ -46,6 +51,20 @@ public class Player : MonoBehaviour
             {
                 historiqueDesBienfaits.Add(b.nom);
             }
+        }
+
+        if (!historiqueDesBienfaits.Contains(b.nom))
+        {
+            historiqueDesBienfaits.Add(b.nom);
+
+            // --- AJOUT POUR L'UI PERMANENTE ---
+            // On cherche le HUD dans les enfants (le Canvas)
+            HUDPermanent hud = GetComponentInChildren<HUDPermanent>();
+            if (hud != null)
+            {
+                hud.AjouterIconeAuHUD(b.icone);
+            }
+            // ----------------------------------
         }
     }
 
@@ -80,7 +99,15 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        // On récupère le script qui gère les déplacements (situé sur Locomotion System ou ici)
+        // On cherche dans les enfants au cas où il serait sur "Locomotion System"
+        moveProvider = GetComponentInChildren<ActionBasedContinuousMoveProvider>();
+
+        if (moveProvider != null)
+        {
+            // On initialise la vitesse réelle du jeu avec ta variable
+            moveProvider.moveSpeed = vitesseDeplacement;
+        }
     }
 
     // Update is called once per frame
