@@ -14,6 +14,9 @@ public class Player : MonoBehaviour
     [Header("Degats Ennemis")]
     public float multiplicateurEnnemis = 1.0f;
 
+    [Header("Interface UI")]
+    // ON AJOUTE CETTE VARIABLE POUR FAIRE LE LIEN MANUELLEMENT
+    public HUDPermanent hudScript;
 
     // ELEMENT DE BASE
     public float vie = 100; // vie pour vie actuelle, celle qui diminue ave les degats subis
@@ -42,29 +45,47 @@ public class Player : MonoBehaviour
 
     public void AjouterBienfait(Bienfait b)
     {
-        if (b != null)
+        Debug.Log("ÉTAPE 1 : La fonction AjouterBienfait est appelée !");
+
+        if (b == null)
         {
-            b.Appliquer(this);
-            bienfaitsActifs.Add(b);
-            Debug.Log($"Bienfait ajouté : {b.nom} (Permanent: {b.estPermanent})");
-            if (!historiqueDesBienfaits.Contains(b.nom))
-            {
-                historiqueDesBienfaits.Add(b.nom);
-            }
+            Debug.LogError("ERREUR : Le bienfait est vide (NULL) !");
+            return;
         }
 
+        Debug.Log("ÉTAPE 2 : Le bienfait est valide : " + b.nom);
+
+        // On applique les stats
+        b.Appliquer(this);
+        bienfaitsActifs.Add(b);
+
+        // Vérification Historique
         if (!historiqueDesBienfaits.Contains(b.nom))
         {
+            Debug.Log("ÉTAPE 3 : C'est un nouveau bienfait, on l'ajoute à l'historique.");
             historiqueDesBienfaits.Add(b.nom);
 
-            // --- AJOUT POUR L'UI PERMANENTE ---
-            // On cherche le HUD dans les enfants (le Canvas)
-            HUDPermanent hud = GetComponentInChildren<HUDPermanent>();
-            if (hud != null)
+            // TENTATIVE DE RECUPERATION DU HUD
+            if (hudScript == null)
             {
-                hud.AjouterIconeAuHUD(b.icone);
+                Debug.LogWarning("ATTENTION : hudScript est vide. Je tente de le trouver tout seul...");
+                hudScript = GetComponentInChildren<HUDPermanent>();
             }
-            // ----------------------------------
+
+            if (hudScript != null)
+            {
+                Debug.Log("ÉTAPE 4 : HUD trouvé ! J'envoie l'icône.");
+                hudScript.AjouterIconeAuHUD(b.icone);
+            }
+            else
+            {
+                Debug.LogError("ERREUR FATALE : Impossible de trouver le script 'HUDPermanent' ni manuellement ni automatiquement !");
+                Debug.LogError("Vérifie que le Canvas est bien un ENFANT du Player XR Origin.");
+            }
+        }
+        else
+        {
+            Debug.Log("INFO : Bienfait déjà connu. Pas d'icône.");
         }
     }
 
@@ -99,6 +120,8 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        historiqueDesBienfaits.Clear();
+        Debug.Log("Mémoire des bienfaits effacée pour nouvelle partie.");
         // On récupère le script qui gère les déplacements (situé sur Locomotion System ou ici)
         // On cherche dans les enfants au cas où il serait sur "Locomotion System"
         moveProvider = GetComponentInChildren<ActionBasedContinuousMoveProvider>();

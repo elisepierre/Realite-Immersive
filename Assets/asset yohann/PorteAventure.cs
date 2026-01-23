@@ -14,7 +14,7 @@ public class PorteAventure : MonoBehaviour
     public string nomSceneDestination;
 
     [Header("Debug")]
-    public bool estEnOuverture = false; // Tu peux le cocher dans l'inspector pour tester
+    public bool estEnOuverture = false;
     private bool chargementEnCours = false;
     private Vector3 positionFinale;
 
